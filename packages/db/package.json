@@ -1,0 +1,14 @@
+{
+  "name": "db",
+  "version": "1.0.0",
+  "description": "database for the app",
+  "main": "index.ts",
+  "author": "Suman Bej",
+  "license": "MIT",
+  "devDependencies": {
+    "prisma": "^6.5.0"
+  },
+  "dependencies": {
+    "prisma": "^6.5.0"
+  }
+}
