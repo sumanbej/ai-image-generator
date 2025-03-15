@@ -8,7 +8,26 @@ const port = PORT;
 app.get('/', (req : Request, res: Response) => {
   res.send('Hello World!');
 })
-app.post()
+
+app.post("/ai/training", (req: Request, res: Response) => {
+  
+});
+
+app.post("/ai/generate", (req: Request, res: Response) => {
+ 
+});
+
+app.post("/pack/generate", (req: Request, res: Response) => {
+
+});
+
+app.get("/pack/bulk", (req: Request, res: Response) => {
+  
+});
+
+app.get("/image", (req: Request, res: Response) => {
+  
+});
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
