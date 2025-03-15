@@ -1,6 +1,7 @@
 import express,{Request,Response} from 'express';
 import 'dotenv/config';
 import { TrainModel, GenerateImage, GenerateImagesFromPack } from "common/types";
+import { prismaClient } from 'db';
 
 const PORT : number = parseInt(process.env.PORT as string,10) || 7072;
 

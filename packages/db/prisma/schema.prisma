@@ -14,12 +14,14 @@ datasource db {
 }
 
 model User{
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   username      String
   profilePicture String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 model Model{
-  id        String   @id @default(cuid())
+  id        String   @id @default(uuid())
   name      String
   type     ModelTypeEnum
   age     Int
@@ -27,10 +29,47 @@ model Model{
   eyeColor EyeColorEnum
   bald   Boolean
   zipUrl String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  TrainingImages TrainingImages[]
+  OutputImages OutputImages[]
 
 
   
 
+}
+
+model TrainingImages{
+  id        String   @id @default(uuid())
+  imageUrl String
+  modelId String
+  model Model @relation(fields: [modelId], references: [id])
+}
+
+model OutputImages{
+  id        String   @id @default(uuid())
+  imageUrl String
+  modelId String
+  userId String
+  model Model @relation(fields: [modelId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
+
+model Packs{
+  id        String   @id @default(uuid())
+  name      String
+  prompts PackPrompts[]
+  // price     Int
+  // description String
+  // modelId String
+}
+model PackPrompts{
+  id        String   @id @default(uuid())
+  prompt      String
+  packId String
+  pack Packs @relation(fields: [packId], references: [id])
 }
 
 enum ModelTypeEnum {
