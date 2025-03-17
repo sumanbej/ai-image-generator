@@ -1,12 +1,17 @@
-import express,{Request,Response} from 'express';
+import express,{NextFunction, Request,Response} from 'express';
 import 'dotenv/config';
 import { TrainModel, GenerateImage, GenerateImagesFromPack } from "common/types";
-import { prismaClient } from 'db';
+import { prismaClient } from "db";
 
 const PORT : number = parseInt(process.env.PORT as string,10) || 7072;
 const USER_ID= "1234";
 const app = express();
 const port = PORT; 
+
+//middleware
+app.use(express.json());
+
+
 app.get('/', (req : Request, res: Response) => {
   res.send('Hello World!');
 });
@@ -96,19 +101,28 @@ res.status(200).json({
 
 app.get("/image/bulk", async(req: Request, res: Response) => {
   
-  const images= req.query.images as string;
+  const images = req.query.images as string;
+  const ids =  req.query.ids as string[];;
+  const limit= parseInt(req.query.limit as string) || 10;
+  const offset= parseInt(req.query.offset as string) || 0;
   const imagesData = await prismaClient.outputImages.findMany({
     where: {
-      id: {
-        in: images.split(",")
-      },
+      id: { in: ids },
       userId: USER_ID
-    }
+    },
+    take: limit,
+    skip: offset
   });
   res.status(200).json({
     images: imagesData 
    });
   
+});
+
+// Global error handler
+app.use((err : Error, req : Request, res : Response, next: NextFunction) => {
+  console.error(err);
+  res.status(500).json({ message: "Internal Server Error" });
 });
 
 app.listen(port, () => { 

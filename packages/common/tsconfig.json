@@ -1,27 +1,28 @@
 {
-    "compilerOptions": {
-      // Enable latest features
-      "lib": ["ESNext", "DOM"],
-      "target": "ESNext",
-      "module": "ESNext",
-      "moduleDetection": "force",
-      "jsx": "react-jsx",
-      "allowJs": true,
-  
-      // Bundler mode
-      "moduleResolution": "bundler",
-      "allowImportingTsExtensions": true,
-      "verbatimModuleSyntax": true,
-      "noEmit": true,
-  
-      // Best practices
-      "strict": true,
-      "skipLibCheck": true,
-      "noFallthroughCasesInSwitch": true,
-  
-      // Some stricter flags (disabled by default)
-      "noUnusedLocals": false,
-      "noUnusedParameters": false,
-      "noPropertyAccessFromIndexSignature": false
-    }
+  "compilerOptions": {
+    // Enable latest features
+    "lib": ["ESNext", "DOM"],
+    "target": "ESNext",
+    "module": "ESNext", 
+    "moduleResolution": "node",   // Corrected from node10 to node
+    "moduleDetection": "force",
+    "jsx": "react-jsx",
+    "allowJs": true,
+
+    // Bundler mode (removed invalid options)
+    "noEmit": true,   // If you don't want output files, keep this, otherwise remove if you want to emit files
+
+    // Best practices
+    "strict": true,
+    "skipLibCheck": true,
+    "noFallthroughCasesInSwitch": true,
+
+    // Some stricter flags (disabled by default)
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noPropertyAccessFromIndexSignature": false,
+
+    // Add esModuleInterop for better compatibility with CommonJS modules
+    "esModuleInterop": true
   }
+}
