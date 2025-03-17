@@ -9,7 +9,7 @@ const app = express();
 const port = PORT; 
 app.get('/', (req : Request, res: Response) => {
   res.send('Hello World!');
-})
+});
 
 app.post("/ai/training", async (req: Request, res: Response) => {
   const parsedBody= TrainModel.safeParse(req.body);
@@ -84,14 +84,34 @@ res.status(200).json({
 
 });
 
-app.get("/pack/bulk", (req: Request, res: Response) => {
+app.get("/pack/bulk", async(req: Request, res: Response) => {
+
+  const packs = await prismaClient.packs.findMany({
+  
+});
+res.status(200).json({
+  packs
+  })
+});
+
+app.get("/image/bulk", async(req: Request, res: Response) => {
+  
+  const images= req.query.images as string;
+  const imagesData = await prismaClient.outputImages.findMany({
+    where: {
+      id: {
+        in: images.split(",")
+      },
+      userId: USER_ID
+    }
+  });
+  res.status(200).json({
+    images: imagesData 
+   });
   
 });
 
-app.get("/image", (req: Request, res: Response) => {
-  
-});
-
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+app.listen(port, () => { 
+  console.log(`server started at http://localhost:${port}`);
+}
+);
