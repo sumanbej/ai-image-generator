@@ -119,6 +119,31 @@ app.get("/image/bulk", async(req: Request, res: Response) => {
   
 });
 
+app.post("/fal-ai/webhook/image", async (req: Request, res: Response) => {
+  console.log("Image generated:", req.body);
+  await prismaClient.outputImages.updateMany({
+    where: {
+      falAiRequestId: req.body.requestId
+    },
+    data: {
+      imageUrl: req.body.imageUrl,
+      status: "Completed"
+    }
+  });
+});
+app.post("/fal-ai/webhook/train", async (req: Request, res: Response) => {
+  console.log("Model trained:", req.body);
+  await prismaClient.model.updateMany({
+    where: {
+      falAiRequestId: req.body.modelId
+    },
+    data: {
+      trainingStatus: "Generated",
+      tensorPath: req.body.tensorPath
+    }
+  });
+});
+
 // Global error handler
 app.use((err : Error, req : Request, res : Response, next: NextFunction) => {
   console.error(err);
