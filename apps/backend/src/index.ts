@@ -38,15 +38,23 @@ app.get("/pre-signed-url", async (req, res) => {
     key,
   });
 });
-
+//traing model------------------------------------------------
 app.post("/ai/training", async (req: Request, res: Response) => {
+try{
   const parsedBody= TrainModel.safeParse(req.body);
   if(!parsedBody.success){
     res.status(411).json({
       message: "Input incorrect"
     })
     return ;
-  }
+}
+const { request_id, response_url } = await falAiModel.trainModel(
+  parsedBody.data.zipUrl,
+  parsedBody.data.name
+);
+
+  
+  
   const data = await prismaClient.model.create({
     data:{
       name: parsedBody.data.name,
@@ -56,14 +64,20 @@ app.post("/ai/training", async (req: Request, res: Response) => {
       bald: parsedBody.data.bald,
       eyeColor: parsedBody.data.eyeColor,
       zipUrl: parsedBody.data.zipUrl,
-      userId: USER_ID
+      userId: req.userId!,
+      falAiRequestId: request_id,
       }
     });
     res.status(200).json({
       modelId: data.id
     });
+  }
+    catch (error) {
+      console.error("Error training model:", error);
+      res.status(500).json({  message: "Internal Server Error" });
+    }
 });
-
+///generate image----------------------------------------------
 app.post("/ai/generate", async (req: Request, res: Response) => {
   const parsedBody= GenerateImage.safeParse(req.body);
   if(!parsedBody.success){
@@ -84,7 +98,7 @@ app.post("/ai/generate", async (req: Request, res: Response) => {
       imageId: data.id
     });
 });
-
+//generate image from pack----------------------------------------------
 app.post("/pack/generate", async (req: Request, res: Response) => {
   const parsedBody= GenerateImagesFromPack.safeParse(req.body);
   if(!parsedBody.success){
@@ -111,7 +125,7 @@ res.status(200).json({
 });
 
 });
-
+//get all packs------------------------------------------------
 app.get("/pack/bulk", async(req: Request, res: Response) => {
 
   const packs = await prismaClient.packs.findMany({
@@ -121,7 +135,7 @@ res.status(200).json({
   packs
   })
 });
-
+//get all images------------------------------------------------
 app.get("/image/bulk", async(req: Request, res: Response) => {
   
   const images = req.query.images as string;
@@ -141,7 +155,7 @@ app.get("/image/bulk", async(req: Request, res: Response) => {
    });
   
 });
-
+//create fal-ai images------------------------------------------------
 app.post("/fal-ai/webhook/image", async (req: Request, res: Response) => {
   console.log("Image generated:", req.body);
   await prismaClient.outputImages.updateMany({
@@ -154,6 +168,8 @@ app.post("/fal-ai/webhook/image", async (req: Request, res: Response) => {
     }
   });
 });
+
+//create fal-ai training model------------------------------------------------
 app.post("/fal-ai/webhook/train", async (req: Request, res: Response) => {
   console.log("Model trained:", req.body);
   await prismaClient.model.updateMany({
